@@ -1,0 +1,17 @@
+<section class="view-shell process-start-view" data-view="start-process">
+  <div class="section-heading">
+    <div><h1>Iniciar proceso</h1><p class="lede">Confirma el turno y el pedido activo registrado por Administración.</p></div>
+  </div>
+  <div class="container process-start-card-wrap">
+    <form id="startProcessForm" class="panel view-form process-start-card">
+      <input id="line" type="hidden">
+      <label class="field-label" for="shiftType">Turno</label>
+      <select class="form-control field-select" id="shiftType" required><option value="T1">T1</option><option value="T2">T2</option></select>
+      <label class="field-label" for="order">Pedido</label>
+      <select class="form-control field-select" id="order" required></select>
+      <label class="field-label" for="shiftDate">Fecha del turno</label>
+      <input class="form-control field-control" id="shiftDate" type="text" inputmode="numeric" placeholder="dd/mm/yyyy" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" required>
+      <button class="btn btn-primary full-width spaced-top" type="submit">Confirmar e iniciar proceso</button>
+    </form>
+  </div>
+</section>

@@ -1,0 +1,27 @@
+<section class="view-shell close-view" data-view="close">
+  <div class="section-heading"><div><p class="eyebrow">Proceso terminado</p><h1>Guardar día</h1><p class="lede">Ingresa el resultado del turno para calcular Giveaway y renta variable.</p></div><span class="status-pill status-acceptable" data-close-status>Turno activo</span></div>
+  <div class="view-grid two-columns">
+    <form id="closeShiftForm" class="panel view-form">
+      <label class="form-label" for="actualWeight">Kilos procesados</label>
+      <input class="field-control" id="actualWeight" type="number" min="0" step="0.1" required>
+      <label class="form-label" for="giveawayPercentage">Porcentaje Giveaway (%)</label>
+      <input class="field-control" id="giveawayPercentage" type="number" min="0" step="0.01" required>
+      <button class="native-button native-button-primary full-width spaced-top" type="submit">Guardar día (quedan registrados)</button>
+    </form>
+    <aside class="panel view-summary" aria-live="polite"><h2>Resultado</h2><div class="result-item"><span>Giveaway</span><strong data-giveaway-result>--</strong></div><div class="result-item"><span>Tramo</span><strong data-tier-result>--</strong></div><div class="result-item accent"><span>Renta variable</span><strong data-incentive-result>--</strong></div></aside>
+  </div>
+  <section class="panel history-panel spaced-top" aria-live="polite">
+    <div class="section-heading compact"><div><h2 data-summary-view-title>Tramo T1</h2><p class="muted small-text no-margin">Historial de tarifas obtenidas por cada día cerrado.</p></div><div class="history-totals"><div><span>Valor Total T1</span><strong data-giveaway-total-t1>$0</strong></div><div><span>Valor Total T2</span><strong data-giveaway-total-t2>$0</strong></div><button type="button" class="native-button native-button-secondary compact-button" data-action="close-monthly-incentive">Cerrar incentivo mensual</button></div></div>
+    <div class="table-slide-controls"><button type="button" class="native-button native-button-secondary compact-button" data-slide-prev>◄ Anterior</button><span data-slide-indicator>1/2 Tramo T1</span><button type="button" class="native-button native-button-secondary compact-button" data-slide-next>Siguiente ►</button></div>
+    <div class="slider-frame">
+      <div class="slider-track" data-slider-track>
+        <div id="slide-1" class="table-slide">
+          <div class="table-wrap spaced-top"><table class="data-table"><thead><tr><th>Fecha</th><th>Tarifa del día</th><th>Giveaway (%)</th></tr></thead><tbody data-tramo-t1-body><tr><td colspan="3" class="muted">Todavía no hay días trabajados registrados.</td></tr></tbody></table></div>
+        </div>
+        <div id="slide-2" class="table-slide">
+          <div class="table-wrap spaced-top"><table class="data-table"><thead><tr><th>Fecha</th><th>Tarifa del día</th><th>Giveaway (%)</th></tr></thead><tbody data-tramo-t2-body><tr><td colspan="3" class="muted">Todavía no hay días trabajados registrados.</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
