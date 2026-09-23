@@ -967,6 +967,12 @@ async function handleSubmit(event) {
   event.preventDefault();
   const form = event.currentTarget;
   const type = form.dataset.type;
+  const submitButton = form.querySelector('button[type="submit"]');
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.dataset.previousLabel = submitButton.textContent;
+    submitButton.textContent = 'Guardando...';
+  }
   if (type === 'personnel-create') {
     try {
       await createPersonnelApi({ nombreCompleto: document.querySelector('#personName').value.trim(), cargo: document.querySelector('#personRole').value, turno: document.querySelector('#personShift').value, fechaIngreso: document.querySelector('#personDate').value, rut: document.querySelector('#personRut').value.trim(), username: document.querySelector('#personUsername')?.value.trim(), password: document.querySelector('#personPassword')?.value });
@@ -1074,6 +1080,11 @@ async function handleSubmit(event) {
     saveState();
     closeNativeModal();
     render();
+  }
+  if (submitButton) {
+    submitButton.disabled = false;
+    submitButton.textContent = submitButton.dataset.previousLabel || 'Guardar';
+    delete submitButton.dataset.previousLabel;
   }
 }
 
