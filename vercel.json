@@ -8,7 +8,8 @@
         "includeFiles": [
           "index.html",
           "Controller/**",
-          "Views/**"
+          "Views/**",
+          "Model/**"
         ]
       }
     }
