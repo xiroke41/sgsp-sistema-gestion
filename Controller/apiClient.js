@@ -1,9 +1,11 @@
 const API_OVERRIDE_KEY = 'sgsp-api-url';
-const API_BASE_URL = window.SGSP_API_URL || localStorage.getItem(API_OVERRIDE_KEY) || 'http://localhost:3000/api';
+const localHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const configuredApiUrl = window.SGSP_API_URL || localStorage.getItem(API_OVERRIDE_KEY);
+const API_BASE_URL = configuredApiUrl || (localHost ? 'http://localhost:3000/api' : '/api');
 
 function buildApiCandidates() {
   const candidates = [API_BASE_URL];
-  if (!window.SGSP_API_URL && API_BASE_URL === 'http://localhost:3000/api') candidates.push('http://localhost:3002/api');
+  if (localHost && !window.SGSP_API_URL && API_BASE_URL === 'http://localhost:3000/api') candidates.push('http://localhost:3002/api');
   return [...new Set(candidates)];
 }
 
