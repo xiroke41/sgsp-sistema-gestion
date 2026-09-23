@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGSP - Login Opción 1</title>
+    <style>
+        :root {
+            --bg-main: #0f1115;
+            --bg-card: #161920;
+            --bg-input: #0b0c0e;
+            --border-color: #2a2e39;
+            --text-primary: #f0f2f5;
+            --text-muted: #8b949e;
+            --accent-blue: #2563eb;
+            --accent-blue-hover: #1d4ed8;
+            --accent-cyan: #06b6d4;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-primary); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+        .login-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 380px;
+            padding: 32px 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .brand-badge {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.15);
+            color: var(--accent-cyan);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            margin-bottom: 12px;
+        }
+
+        h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        p.subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; }
+        
+        input {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: var(--accent-blue); }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--accent-blue);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .btn-submit:hover { background-color: var(--accent-blue-hover); }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <span class="brand-badge">SGSP CONTROL</span>
+        <h1>Bienvenidos</h1>
+        <p class="subtitle">Inicia sesión para acceder al sistema.</p>
+        <form>
+            <div class="form-group">
+                <label>Usuario</label>
+                <input type="text" placeholder="Ej. op_fpalma" required>
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-submit">Iniciar Sesión</button>
+        </form>
+        <div class="card-footer">
+            <span>Soporte Técnico</span>
+            <span>v1.0</span>
+        </div>
+    </div>
+</body>
+</html>

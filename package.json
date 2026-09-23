@@ -1,0 +1,20 @@
+{
+  "name": "sgsp-operacion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema de Gestion de Sala y Rendimiento Productivo",
+  "type": "module",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^6.18.0"
+  },
+  "scripts": {
+    "test": "node --test Model/*.test.js middleware/*.test.js server.test.js",
+    "start": "npx --yes serve .",
+    "api": "node server.js"
+  }
+}

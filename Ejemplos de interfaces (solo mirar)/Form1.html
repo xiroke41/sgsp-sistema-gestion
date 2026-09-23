@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opción 1 - Formulario Tarjetas</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .card-form { background: #ffffff; padding: 32px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; max-width: 480px; }
+    .card-form h2 { font-size: 1.5rem; color: #1e293b; margin-bottom: 20px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.875rem; font-weight: 600; color: #475569; margin-bottom: 6px; }
+    .form-control { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; outline: none; transition: all 0.2s; }
+    .form-control:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .btn-primary { width: 100%; padding: 12px; background-color: #2563eb; color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+    .btn-primary:hover { background-color: #1d4ed8; }
+  </style>
+</head>
+<body>
+
+  <form class="card-form">
+    <h2>Cierre de Turno</h2>
+    <div class="form-group">
+      <label for="turno">Turno ID</label>
+      <select id="turno" class="form-control">
+        <option value="">Selecciona un turno</option>
+        <option value="T-1042">T-1042</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="kilos">Kilogramos Procesados</label>
+        <input type="number" id="kilos" class="form-control" placeholder="Ej: 5600">
+      </div>
+      <div class="form-group">
+        <label for="giveaway">Giveaway (%)</label>
+        <input type="number" step="0.01" id="giveaway" class="form-control" placeholder="Ej: 0.06">
+      </div>
+    </div>
+    <button type="button" class="btn-primary">Finalizar y Guardar Turno</button>
+  </form>
+
+</body>
+</html>
