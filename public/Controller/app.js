@@ -253,6 +253,11 @@ async function renderLogin() {
       await hydrateFromApi();
       await hydrateCatalogs();
     } catch (error) {
+      if (!['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+        document.querySelector('#loginError').textContent = error.message || 'El servicio no está disponible.';
+        button.disabled = false;
+        return;
+      }
       const demoUser = authenticate(username, password);
       if (!demoUser && error.status) { document.querySelector('#loginError').textContent = error.message; button.disabled = false; return; }
       if (!demoUser) { document.querySelector('#loginError').textContent = 'No fue posible iniciar sesión con esas credenciales.'; button.disabled = false; return; }
