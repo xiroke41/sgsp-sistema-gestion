@@ -255,10 +255,10 @@ async function renderLogin() {
     } catch (error) {
       const demoUser = authenticate(username, password);
       if (!demoUser && error.status) { document.querySelector('#loginError').textContent = error.message; button.disabled = false; return; }
-      if (!demoUser) { document.querySelector('#loginError').textContent = 'API no disponible y credenciales demo incorrectas.'; button.disabled = false; return; }
+      if (!demoUser) { document.querySelector('#loginError').textContent = 'No fue posible iniciar sesión con esas credenciales.'; button.disabled = false; return; }
       session = demoUser;
       saveSession();
-      showToast('Modo demo activo: API no disponible.');
+      showToast('Sesión local iniciada.');
     }
     render();
     button.disabled = false;
@@ -309,7 +309,7 @@ async function render() {
         <div class="header-meta user-actions"><span class="pulse"></span><span>${session.name} · ${session.roleLabel}</span><button class="logout-button" data-action="logout">Salir</button></div>
       </div></div></header>
       <div class="workspace-body"><aside class="workspace-sidebar"><div><nav class="workspace-nav" aria-label="Navegación de operación"><button class="workspace-nav-item" data-view="dashboard">Dashboard</button><button class="workspace-nav-item" data-view="start">Apertura de turno</button><button class="workspace-nav-item" data-view="downtime">Tiempos muertos</button><button class="workspace-nav-item" data-view="people">Gestión Personal</button><button class="workspace-nav-item" data-view="close">Cierre de Turno</button></nav></div><div class="workspace-footer">Planta SGSP<br><span>Jefe de línea</span></div></aside><main class="container-fluid px-3 px-lg-5">
-        <section class="mb-4" data-dashboard-chrome><div class="row align-items-end g-3"><div class="col-lg-8"><h1>Buenos días, ${session.name.split(' ')[0]}.</h1><p class="lede">Control operativo del turno iniciado a las ${state.shift.startedAt}. Todo lo importante, a la vista.</p></div><div class="col-lg-4 text-lg-end">${session.role === 'admin' ? '<button class="btn btn-outline-secondary" data-action="reset">Restablecer demo</button>' : ''}</div></div></section>
+        <section class="mb-4" data-dashboard-chrome><div class="row align-items-end g-3"><div class="col-lg-8"><h1>Buenos días, ${session.name.split(' ')[0]}.</h1><p class="lede">Control operativo del turno iniciado a las ${state.shift.startedAt}. Todo lo importante, a la vista.</p></div><div class="col-lg-4 text-lg-end">${session.role === 'admin' ? '<button class="btn btn-outline-secondary" data-action="reset">Restablecer datos</button>' : ''}</div></div></section>
         <section class="dashboard-tranches mb-4" data-dashboard-chrome aria-label="Tramos persistentes por turno"><button class="tranche-slider-arrow tranche-slider-prev" type="button" data-tranche-prev aria-label="Gráfico anterior">◄</button><div class="tranche-slider-viewport"><div class="tranche-slider-track" data-tranche-track><article class="panel tariff-chart-card"><div class="section-heading"><div><span class="metric-label">Tramos T1</span><h2>Renta variable</h2></div><span class="shift-chart-badge shift-t1">T1</span></div>${renderTariffChart('T1')}</article><article class="panel tariff-chart-card"><div class="section-heading"><div><span class="metric-label">Tramos T2</span><h2>Renta variable</h2></div><span class="shift-chart-badge shift-t2">T2</span></div>${renderTariffChart('T2')}</article></div></div><button class="tranche-slider-arrow tranche-slider-next" type="button" data-tranche-next aria-label="Gráfico siguiente">►</button></section>
         <section class="workflow-steps mb-4" aria-label="Flujo diario"><div class="workflow-step ${stage === 'assigned' ? 'current' : 'done'}"><span>1</span><strong>Turno asignado</strong><small>Administrador</small></div><div class="workflow-line"></div><div class="workflow-step ${stage === 'in_process' ? 'current' : stage === 'completed' ? 'done' : ''}"><span>2</span><strong>En proceso</strong><small>Operación diaria</small></div><div class="workflow-line"></div><div class="workflow-step ${stage === 'completed' ? 'current' : ''}"><span>3</span><strong>Proceso terminado</strong><small>Guardar día</small></div></section>
         <section class="panel alert-strip mb-4"><div class="alert-status"><span class="shift-timer-label">Tiempo transcurrido</span><strong class="shift-timer" data-shift-timer>00:00:00</strong></div></section>
@@ -1077,6 +1077,6 @@ async function handleSubmit(event) {
   }
 }
 
-document.addEventListener('click', (event) => { if (event.target.closest('[data-action="reset"]')) { localStorage.removeItem(STORAGE_KEY); state = structuredClone(initialState); render(); showToast('Demo restablecida.'); } });
+document.addEventListener('click', (event) => { if (event.target.closest('[data-action="reset"]')) { localStorage.removeItem(STORAGE_KEY); state = structuredClone(initialState); render(); showToast('Datos restablecidos.'); } });
 render();
 if (session?.token) hydrateFromApi().then(() => render());
