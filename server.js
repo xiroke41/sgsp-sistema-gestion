@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { dirname, resolve } from 'node:path';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import apiRoutes from './routes/api.js';
 import { errorHandler } from './middleware/http.js';
@@ -11,7 +11,6 @@ import { seedLocalDatabase } from './Model/localSeed.js';
 process.env.JWT_SECRET ||= 'sgsp-local-demo-secret';
 
 const app = express();
-const frontendRoot = dirname(fileURLToPath(import.meta.url));
 
 function isAllowedLocalOrigin(origin) {
   if (!origin) return true;
@@ -46,8 +45,8 @@ app.use((request, response, next) => {
   }
   return next();
 });
-app.use(express.static(frontendRoot));
-app.use((_request, response) => response.sendFile(resolve(frontendRoot, 'index.html')));
+app.use(express.static('.'));
+app.use((_request, response) => response.sendFile(resolve('.', 'index.html')));
 app.use(errorHandler);
 
 export { app };
