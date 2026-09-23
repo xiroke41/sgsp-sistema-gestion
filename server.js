@@ -29,6 +29,7 @@ app.use(cors({
   }
 }));
 app.use(express.json({ limit: '100kb' }));
+app.get('/', (_request, response) => response.json({ status: 'OK', message: 'API SGSP en funcionamiento' }));
 app.get('/health', (_request, response) => response.json({ success: true, data: { service: 'sgsp-api', status: 'ok' }, message: 'API disponible.' }));
 app.get('/ready', async (_request, response) => {
   try {
