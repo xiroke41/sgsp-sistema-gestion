@@ -43,6 +43,7 @@ app.use((_request, response) => response.status(404).json({ success: false, erro
 app.use(errorHandler);
 
 export { app };
+export default app;
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const port = Number(process.env.API_PORT || 3000);
