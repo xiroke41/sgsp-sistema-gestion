@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import apiRoutes from './routes/api.js';
 import { errorHandler } from './middleware/http.js';
@@ -11,6 +11,7 @@ import { seedLocalDatabase } from './Model/localSeed.js';
 process.env.JWT_SECRET ||= 'sgsp-local-demo-secret';
 
 const app = express();
+const frontendRoot = dirname(fileURLToPath(import.meta.url));
 
 function isAllowedLocalOrigin(origin) {
   if (!origin) return true;
@@ -29,7 +30,6 @@ app.use(cors({
   }
 }));
 app.use(express.json({ limit: '100kb' }));
-app.get('/', (_request, response) => response.json({ status: 'OK', message: 'API SGSP en funcionamiento' }));
 app.get('/health', (_request, response) => response.json({ success: true, data: { service: 'sgsp-api', status: 'ok' }, message: 'API disponible.' }));
 app.get('/ready', async (_request, response) => {
   try {
@@ -40,7 +40,14 @@ app.get('/ready', async (_request, response) => {
   }
 });
 app.use('/api', apiRoutes);
-app.use((_request, response) => response.status(404).json({ success: false, error: 'NOT_FOUND', message: 'Ruta no encontrada.' }));
+app.use((request, response, next) => {
+  if (request.path === '/api' || request.path.startsWith('/api/')) {
+    return response.status(404).json({ success: false, error: 'NOT_FOUND', message: 'Ruta no encontrada.' });
+  }
+  return next();
+});
+app.use(express.static(frontendRoot));
+app.use((_request, response) => response.sendFile(resolve(frontendRoot, 'index.html')));
 app.use(errorHandler);
 
 export { app };
