@@ -1,6 +1,7 @@
 const API_OVERRIDE_KEY = 'sgsp-api-url';
 const localHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-const configuredApiUrl = window.SGSP_API_URL || localStorage.getItem(API_OVERRIDE_KEY);
+const storedApiUrl = localStorage.getItem(API_OVERRIDE_KEY);
+const configuredApiUrl = window.SGSP_API_URL || (localHost ? storedApiUrl : null);
 const API_BASE_URL = configuredApiUrl || (localHost ? 'http://localhost:3000/api' : '/api');
 
 function buildApiCandidates() {
