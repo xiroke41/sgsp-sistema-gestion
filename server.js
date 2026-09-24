@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import apiRoutes from './routes/api.js';
 import { errorHandler } from './middleware/http.js';
-import { closeMongo, initializeDatabase, pingDatabase } from './Model/mongo.js';
+import { closeMongo, initializeDatabase } from './Model/mongo.js';
 import { seedLocalDatabase } from './Model/localSeed.js';
 
 process.env.JWT_SECRET ||= 'sgsp-local-demo-secret';
@@ -32,7 +32,7 @@ app.use(express.json({ limit: '100kb' }));
 app.get('/health', (_request, response) => response.json({ success: true, data: { service: 'sgsp-api', status: 'ok' }, message: 'API disponible.' }));
 app.get('/ready', async (_request, response) => {
   try {
-    await pingDatabase();
+    await initializeDatabase();
     return response.json({ success: true, data: { service: 'sgsp-api', database: 'SGSP Local', status: 'ready' }, message: 'API y base local disponibles.' });
   } catch (error) {
     return response.status(503).json({ success: false, error: 'DATABASE_UNAVAILABLE', message: 'La base local aún no está disponible.' });
