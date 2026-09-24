@@ -162,7 +162,7 @@ async function ensureAttendance(database, turnoId, collaborators) {
   ]);
 }
 
-async function ensureInitialDowntime(database, turnoId) {
+async function ensureInitialDowntime(database, turnoId, registeredBy) {
   const existing = await database.collection('detencionesLinea').findOne({ turnoId });
   if (existing) return existing;
   const start = new Date();
@@ -175,7 +175,7 @@ async function ensureInitialDowntime(database, turnoId) {
     inicio: start,
     fin: end,
     duracionMinutos: 6,
-    registradoPor: null
+    registradoPor: registeredBy
   };
   const result = await database.collection('detencionesLinea').insertOne(document);
   return { ...document, _id: result.insertedId };
@@ -204,6 +204,6 @@ export async function seedLocalDatabase() {
   const activeShift = await ensureActiveShift(database, andesAsia, jefe, pedido);
   await ensurePendingShift(database, nippon, jefe, pedido);
   await ensureAttendance(database, activeShift._id, collaborators);
-  await ensureInitialDowntime(database, activeShift._id);
+  await ensureInitialDowntime(database, activeShift._id, admin._id);
   return { admin, jefe, lines: { andesAsia, nippon } };
 }
