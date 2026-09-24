@@ -465,6 +465,7 @@ export async function initializeDatabase() {
   if (!readyPromise) {
     readyPromise = loadDatabase().then(async (database) => {
       await ensureCollaboratorCollection(database);
+      await migrateLegacyCollaborators(database);
       isReady = true;
       return database;
     }).catch((error) => {
@@ -474,6 +475,13 @@ export async function initializeDatabase() {
     });
   }
   return readyPromise;
+}
+
+async function migrateLegacyCollaborators(database) {
+  await database.collection('colaboradores').updateMany(
+    { $or: [{ turno: { $exists: false } }, { turno: null }, { turno: '' }] },
+    { $set: { turno: 'T1', activo: true, updatedAt: new Date() } }
+  );
 }
 
 export async function ensureCollaboratorCollection(database) {
