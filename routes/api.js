@@ -28,7 +28,7 @@ router.post('/downtimes', requirePermission('register_downtime'), validateBody([
 router.patch('/downtimes/:id/end', requirePermission('register_downtime'), asyncHandler(operationController.endDowntime));
 router.delete('/downtimes/:id', requirePermission('register_downtime'), asyncHandler(operationController.deleteDowntime));
 router.patch('/operators/status', requirePermission('manage_people'), validateBody(['turnoId', 'colaboradorId', 'estado']), asyncHandler(operationController.updateOperatorStatus));
-router.patch('/operators/rotation-groups', requirePermission('manage_people'), validateBody(['turnoId', 'colaboradorId', 'grupoRotacion']), asyncHandler(operationController.updateRotationGroups));
+router.patch('/operators/rotation-groups', requirePermission('manage_people'), validateBody(['turnoId', 'colaboradorId']), asyncHandler(operationController.updateRotationGroups));
 router.get('/rotations/:turnoId', requirePermission('view_dashboard'), asyncHandler(operationController.listRotations));
 
 router.get('/admin/summary', requirePermission('all'), asyncHandler(adminController.summary));
