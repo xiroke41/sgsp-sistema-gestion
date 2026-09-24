@@ -54,7 +54,14 @@ async function syncAttendanceForShift(database, shift) {
   const existing = await database.collection('asistenciaTurno').find({ turnoId: shift._id }).toArray();
   const existingIds = new Set(existing.map((record) => record.colaboradorId.toString()));
   const activePersonnel = await database.collection('colaboradores').find({ activo: true }).toArray();
-  const eligible = activePersonnel.filter((person) => (person.turno === 'T2' ? 'T2' : 'T1') === shift.turno);
+  let eligible = activePersonnel.filter((person) => (person.turno === 'T2' ? 'T2' : 'T1') === shift.turno);
+  if (!eligible.length && !existing.length && activePersonnel.length) {
+    eligible = activePersonnel;
+    await database.collection('colaboradores').updateMany(
+      { _id: { $in: activePersonnel.map((person) => person._id) } },
+      { $set: { turno: shift.turno, updatedAt: new Date() } }
+    );
+  }
   const toInsert = eligible.filter((person) => !existingIds.has(person._id.toString()));
   if (toInsert.length) {
     await database.collection('asistenciaTurno').insertMany(toInsert.map((person, index) => ({
@@ -140,6 +147,7 @@ export async function dashboard(request, response) {
   const shiftFilter = request.user.roleName === 'Jefe de linea' || request.user.roleName === 'Jefe de línea' ? { jefeLineaId: request.user._id } : {};
   const shift = await findCurrentShift(database, shiftFilter);
   const line = shift ? await database.collection('lineasProduccion').findOne({ _id: shift.lineaId }) : null;
+  if (shift?.estado === 'activo') await syncAttendanceForShift(database, shift);
   const operators = shift?.estado === 'activo' ? await database.collection('asistenciaTurno').aggregate([{ $match: { turnoId: shift._id, presente: true } }, { $lookup: { from: 'colaboradores', localField: 'colaboradorId', foreignField: '_id', as: 'colaborador' } }, { $unwind: { path: '$colaborador', preserveNullAndEmptyArrays: true } }, { $project: { _id: 1, colaboradorId: 1, estado: 1, puestoId: 1, lineaTrabajo: 1, grupoRotacion: 1, grupoPuesto: 1, nombre: '$colaborador.nombreCompleto', cargo: '$colaborador.cargo', productividad: 1 } }]).toArray() : [];
   const downtime = shift ? await database.collection('detencionesLinea').find({ turnoId: shift._id }).sort({ inicio: -1 }).limit(20).toArray() : [];
   const giveawayHistory = shift ? await loadGiveawayHistory(database, shift, request.user) : { rows: [], total: 0 };
