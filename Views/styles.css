@@ -96,9 +96,7 @@ button { min-height: 44px; }
 .login-brand { color: var(--navy); }
 .login-error { min-height: 20px; margin-top: 10px; color: var(--danger); font-size: .82rem; }
 .demo-access { display: grid; gap: 4px; padding: 12px; color: var(--muted); background: #f3f6f5; border-left: 3px solid var(--teal); font-size: .78rem; }
-.logout-button { min-height: auto; margin-left: 8px; padding: 3px 8px; color: white; background: transparent; border: 1px solid rgba(255,255,255,.4); border-radius: 4px; font-size: .72rem; cursor: pointer; transition: color .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
-.logout-button:hover { color: #fff7ed; background: rgba(242,124,0,.2); border-color: #f27c00; box-shadow: 0 0 0 2px rgba(242,124,0,.16); transform: translateY(-1px); }
-.logout-button:focus-visible { outline: 2px solid #f9b15d; outline-offset: 2px; }
+.logout-button { min-height: auto; margin-left: 8px; padding: 3px 8px; color: white; background: transparent; border: 1px solid rgba(255,255,255,.4); border-radius: 4px; font-size: .72rem; }
 .admin-personnel-button { min-height: 32px; margin-left: 8px; padding: 5px 10px; color: #f8fafc; background: #20252d; border: 1px solid var(--teal); border-radius: 4px; font-size: .72rem; }
 .admin-personnel-button:hover, .admin-personnel-button:focus-visible { color: #090a0f; background: var(--teal); outline: none; }
 .admin-shell main { background:
@@ -187,8 +185,6 @@ button { min-height: 44px; }
 .rotation-editor-zone-title span { color: var(--muted); }
 .rotation-editor-zone-body { display: grid; gap: 7px; min-height: 215px; padding: 8px; }
 .rotation-editor-card { display: grid; gap: 3px; padding: 9px; color: #f8fafc; background: #181b20; border: 1px solid var(--line); border-left: 3px solid var(--accent-blue); border-radius: 4px; cursor: grab; }
-.rotation-editor-card.is-selected { border-color: var(--secondary); box-shadow: 0 0 0 2px rgba(245, 158, 11, .2); }
-.rotation-editor-card.is-changed { color: #fff7ed; background: rgba(242, 124, 0, .22); border-color: #f27c00; box-shadow: 0 0 0 2px rgba(242, 124, 0, .24); }
 .rotation-editor-card.position-card-a { border-left-color: #10b981; }
 .rotation-editor-card.position-card-b { border-left-color: #ef4444; }
 .rotation-editor-card.position-card-c { border-left-color: #3b82f6; }
