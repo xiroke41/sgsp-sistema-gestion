@@ -13,7 +13,7 @@ function runValidation(body, fields) {
 test('rechaza campos obligatorios compuestos solo por espacios', () => {
   const result = runValidation({ username: '   ' }, ['username', 'password']);
   assert.equal(result.statusCode, 400);
-  assert.deepEqual(result.payload, { success: false, error: 'VALIDATION_ERROR', message: 'Faltan campos: username, password.' });
+  assert.deepEqual(result.payload, { success: false, error: 'VALIDATION_ERROR', message: 'Faltan campos: usuario, contraseña.' });
   assert.equal(result.nextCalled, false);
 });
 

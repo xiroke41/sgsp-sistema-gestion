@@ -8,7 +8,8 @@ export function validateBody(requiredFields) {
       const value = request.body?.[field];
       return value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
     });
-    if (missing.length) return response.status(400).json({ success: false, error: 'VALIDATION_ERROR', message: `Faltan campos: ${missing.join(', ')}.` });
+    const labels = { username: 'usuario', password: 'contraseña', turnoId: 'turno', colaboradorId: 'colaborador', grupoRotacion: 'grupo de rotación', grupoPuesto: 'grupo de puesto', lineaId: 'línea', jefeLineaId: 'jefe de línea', fechaIngreso: 'fecha de ingreso', nombreCompleto: 'nombre completo' };
+    if (missing.length) return response.status(400).json({ success: false, error: 'VALIDATION_ERROR', message: `Faltan campos: ${missing.map((field) => labels[field] || field).join(', ')}.` });
     next();
   };
 }

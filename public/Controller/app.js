@@ -33,6 +33,14 @@ let lineManagers = [];
 const viewTemplateCache = new Map();
 const app = document.querySelector('#app');
 const toast = document.querySelector('#toast');
+document.addEventListener('invalid', (event) => {
+  const field = event.target;
+  if (!field || !field.willValidate) return;
+  if (field.validity.valueMissing) field.setCustomValidity('Completa este campo.');
+  else if (field.validity.typeMismatch) field.setCustomValidity('Ingresa un valor válido.');
+  else if (field.validity.patternMismatch) field.setCustomValidity('Usa el formato indicado.');
+}, true);
+document.addEventListener('input', (event) => event.target?.setCustomValidity?.(''));
 const statusLabels = { available: 'Disponibles', assigned: 'Asignados', break: 'En pausa', inactive: 'Inactivos' };
 const statusOrder = ['available', 'assigned', 'break', 'inactive'];
 const workLines = [
