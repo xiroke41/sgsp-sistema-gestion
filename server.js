@@ -15,6 +15,8 @@ const app = express();
 function isAllowedLocalOrigin(origin) {
   if (!origin) return true;
   if (process.env.FRONTEND_ORIGIN && origin === process.env.FRONTEND_ORIGIN) return true;
+  if (process.env.VERCEL_URL && origin === `https://${process.env.VERCEL_URL}`) return true;
+  if (origin === 'https://sgsp-sistema-gestion.vercel.app') return true;
   return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
 }
 
