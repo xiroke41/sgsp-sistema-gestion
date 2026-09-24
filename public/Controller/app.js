@@ -250,6 +250,7 @@ async function renderLogin() {
       const user = response.data.user;
       session = { ...user, name: user.username, roleLabel: user.role, role: normalizeRole(user.role), token: response.data.token };
       saveSession();
+      render();
       await hydrateFromApi();
       await hydrateCatalogs();
     } catch (error) {
