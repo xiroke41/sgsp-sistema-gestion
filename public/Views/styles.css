@@ -96,7 +96,9 @@ button { min-height: 44px; }
 .login-brand { color: var(--navy); }
 .login-error { min-height: 20px; margin-top: 10px; color: var(--danger); font-size: .82rem; }
 .demo-access { display: grid; gap: 4px; padding: 12px; color: var(--muted); background: #f3f6f5; border-left: 3px solid var(--teal); font-size: .78rem; }
-.logout-button { min-height: auto; margin-left: 8px; padding: 3px 8px; color: white; background: transparent; border: 1px solid rgba(255,255,255,.4); border-radius: 4px; font-size: .72rem; }
+.logout-button { min-height: auto; margin-left: 8px; padding: 3px 8px; color: white; background: transparent; border: 1px solid rgba(255,255,255,.4); border-radius: 4px; font-size: .72rem; cursor: pointer; transition: color .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.logout-button:hover { color: #fff7ed; background: rgba(242,124,0,.2); border-color: #f27c00; box-shadow: 0 0 0 2px rgba(242,124,0,.16); transform: translateY(-1px); }
+.logout-button:focus-visible { outline: 2px solid #f9b15d; outline-offset: 2px; }
 .admin-personnel-button { min-height: 32px; margin-left: 8px; padding: 5px 10px; color: #f8fafc; background: #20252d; border: 1px solid var(--teal); border-radius: 4px; font-size: .72rem; }
 .admin-personnel-button:hover, .admin-personnel-button:focus-visible { color: #090a0f; background: var(--teal); outline: none; }
 .admin-shell main { background:
