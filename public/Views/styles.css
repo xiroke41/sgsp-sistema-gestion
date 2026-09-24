@@ -31,6 +31,8 @@ body { margin: 0; color: var(--ink); background: var(--paper); font-family: 'DM 
 button, input, select { font: inherit; }
 button { min-height: 44px; }
 .app-shell { min-height: 100vh; }
+.app-footer { display: flex; justify-content: space-between; gap: 16px; width: min(100% - 48px, 1320px); margin: 0 auto; padding: 18px 0 22px; color: var(--muted); border-top: 1px solid var(--line); font-size: .72rem; line-height: 1.4; }
+.app-footer span:last-child { text-align: right; }
 .page-container { width: min(100% - 48px, 1320px); margin: 0 auto; }
 .topbar-content { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; }
 .user-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-left: auto; text-align: right; }
@@ -443,4 +445,6 @@ tbody td { padding: 14px 8px; font-size: .86rem; border-bottom-color: var(--line
   .section-heading.compact { align-items: flex-start; }
   .history-total { width: 100%; justify-items: flex-start; text-align: left; }
   .history-totals { width: 100%; flex-wrap: wrap; justify-content: flex-start; margin-left: 0; text-align: left; }
+  .app-footer { align-items: flex-start; flex-direction: column; gap: 6px; width: min(100% - 28px, 720px); }
+  .app-footer span:last-child { text-align: left; }
 }

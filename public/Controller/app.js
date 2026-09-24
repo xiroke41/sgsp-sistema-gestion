@@ -231,13 +231,14 @@ function showToast(message) {
   window.setTimeout(() => toast.classList.remove('show'), 2800);
 }
 function icon(name) { return { chart: '↗', pause: '◷', stop: '◼', people: '◎' }[name] ?? '•'; }
+function footerMarkup() { return '<footer class="app-footer"><span>SGSP Industrial</span><span>Sistema de Gestión de Planta · 2026</span></footer>'; }
 async function renderLogin() {
   try {
     const template = await loadViewTemplate('Views/login.html');
-    app.innerHTML = `<main class="login-page">${template}</main>`;
+    app.innerHTML = `<main class="login-page">${template}${footerMarkup()}</main>`;
   } catch (error) {
     console.warn(error.message);
-    app.innerHTML = '<main class="login-page"><section class="login-panel"><h1>Iniciar sesión</h1><form id="loginForm"><label for="username">Usuario</label><input id="username" required><label for="password">Contraseña</label><input id="password" type="password" required><button type="submit">Iniciar sesión</button><div id="loginError" role="alert"></div></form></section></main>';
+    app.innerHTML = `<main class="login-page"><section class="login-panel"><h1>Iniciar sesión</h1><form id="loginForm"><label for="username">Usuario</label><input id="username" required><label for="password">Contraseña</label><input id="password" type="password" required><button type="submit">Iniciar sesión</button><div id="loginError" role="alert"></div></form></section>${footerMarkup()}</main>`;
   }
   document.querySelector('#loginForm').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -274,6 +275,7 @@ async function renderAdminDashboard() {
   try {
     const template = await loadViewTemplate('Views/admin/dashboard.html');
     app.innerHTML = template;
+    app.querySelector('.admin-shell')?.insertAdjacentHTML('beforeend', footerMarkup());
     app.querySelectorAll('.admin-module-card:nth-child(n+4)').forEach((card) => card.remove());
     app.querySelector('[data-admin-user]').textContent = `${session.name} · Administrador`;
     app.insertAdjacentHTML('beforeend', modalMarkup());
@@ -324,6 +326,7 @@ async function render() {
         <section class="dashboard-section"><div class="section-heading"><h2>Gestionar gente</h2><span class="text-muted small">Rotación y dotación</span></div><div class="rotation-toolbar">${inProcess && showPeople ? '<button class="btn btn-sm btn-outline-secondary" data-action="rotate">Rotar puestos A → B → C</button><button class="btn btn-sm btn-colacion" data-action="rotate-colacion" data-colacion-group="1" type="button">Colación G1</button><button class="btn btn-sm btn-colacion" data-action="rotate-colacion" data-colacion-group="2" type="button">Colación G2</button><button class="btn btn-sm btn-outline-secondary" data-action="edit-groups">Editar grupos</button><button class="btn btn-sm btn-outline-secondary" data-action="edit-colacion-groups">Editar Grupos de colación</button>' : ''}${inProcess ? '<button class="btn btn-sm btn-outline-secondary" data-action="return-all">Retorno general</button>' : ''}<button class="btn btn-sm btn-outline-secondary" data-action="rotations">Historial</button></div><div class="work-lines-board">${workLines.map(renderWorkLine).join('')}</div></section>
         <section class="dashboard-section"><div class="section-heading"><h2>Proceso terminado</h2><span class="text-muted small">Guardar día</span></div><div class="section-panel closure-panel"><div class="d-flex justify-content-between mb-3"><span class="text-muted">Peso objetivo</span><strong>${formatNumber(state.shift.targetWeight)} kg</strong></div><div class="d-flex justify-content-between mb-3"><span class="text-muted">Peso procesado</span><strong>${formatNumber(state.shift.actualWeight)} kg</strong></div><div class="d-flex justify-content-between pt-3 border-top"><span class="text-muted">Incentivo estimado</span><strong class="text-teal">$${formatNumber(result.factor)}</strong></div>${showClose && inProcess ? '<button class="btn btn-sgsp w-100 mt-3" data-action="close">Terminar proceso y guardar día</button>' : `<p class="text-muted small mt-3 mb-0">${stage === 'assigned' ? 'Inicia el proceso para habilitar el cierre.' : 'El cierre queda registrado después de guardar el día.'}</p>`}</div></section>
       </main></div>
+      ${footerMarkup()}
     </div>${modalMarkup()}`;
   await hydratePhysicalViews();
   bindNativeModal();
