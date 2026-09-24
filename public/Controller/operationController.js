@@ -143,16 +143,16 @@ export async function listRotations(request, response) {
 
 export async function updateRotationGroups(request, response) {
   const { turnoId, colaboradorId, grupoRotacion, grupoPuesto } = request.body;
-  const group = Number(grupoRotacion);
-  if (![1, 2].includes(group)) return response.status(400).json({ success: false, error: 'INVALID_ROTATION_GROUP', message: 'El grupo de rotación debe ser G1 o G2.' });
+  const group = grupoRotacion === undefined ? null : Number(grupoRotacion);
+  if (group !== null && ![1, 2].includes(group)) return response.status(400).json({ success: false, error: 'INVALID_ROTATION_GROUP', message: 'El grupo de rotación debe ser G1 o G2.' });
   if (grupoPuesto && !['A', 'B', 'C'].includes(grupoPuesto)) return response.status(400).json({ success: false, error: 'INVALID_POSITION_GROUP', message: 'El grupo de puesto debe ser A, B o C.' });
   const database = await getDatabase();
   const result = await database.collection('asistenciaTurno').findOneAndUpdate(
     { turnoId: id(turnoId), colaboradorId: id(colaboradorId), presente: true },
-    { $set: { grupoRotacion: group, ...(grupoPuesto ? { grupoPuesto } : {}), updatedAt: new Date() } },
+    { $set: { ...(group !== null ? { grupoRotacion: group } : {}), ...(grupoPuesto ? { grupoPuesto } : {}), updatedAt: new Date() } },
     { returnDocument: 'after' }
   );
   if (!result) return response.status(404).json({ success: false, error: 'OPERATOR_NOT_FOUND', message: 'La asistencia del colaborador no existe en el turno.' });
-  await database.collection('auditoria').insertOne({ usuarioId: request.user._id, entidad: 'asistenciaTurno', entidadId: result._id, accion: 'ROTATION_GROUP_CHANGE', datos: { colaboradorId: result.colaboradorId, grupoRotacion: group, grupoPuesto }, createdAt: result.updatedAt });
-  return response.json({ success: true, data: result, message: `Colaborador asignado a G${group}.` });
+  await database.collection('auditoria').insertOne({ usuarioId: request.user._id, entidad: 'asistenciaTurno', entidadId: result._id, accion: 'ROTATION_GROUP_CHANGE', datos: { colaboradorId: result.colaboradorId, ...(group !== null ? { grupoRotacion: group } : {}), grupoPuesto }, createdAt: result.updatedAt });
+  return response.json({ success: true, data: result, message: group === null ? 'Puesto de trabajo actualizado.' : `Colaborador asignado a G${group}.` });
 }

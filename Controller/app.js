@@ -867,7 +867,7 @@ async function rotateWorkLines(targetGroup = null) {
     const positionGroup = nextPositionGroup(operator.grupoPuesto);
     if (positionGroup && positionGroup !== operator.grupoPuesto) {
       if (session.token && state.shift._id) {
-        try { await updateRotationGroupsApi({ turnoId: state.shift._id, colaboradorId: operator.id, grupoRotacion: Number(operator.grupoRotacion || 1), grupoPuesto: positionGroup }); }
+        try { await updateRotationGroupsApi({ turnoId: state.shift._id, colaboradorId: operator.id, grupoPuesto: positionGroup }); }
         catch (error) { showToast(error.message); continue; }
       }
       operator.grupoPuesto = positionGroup;
