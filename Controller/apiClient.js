@@ -22,7 +22,7 @@ async function request(path, options = {}) {
   let networkError;
   for (const baseUrl of buildApiCandidates()) {
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 2500);
+    const timeout = window.setTimeout(() => controller.abort(), 10000);
     try {
       response = await fetch(`${baseUrl}${path}`, { ...options, headers, signal: controller.signal });
       persistApiBaseUrl(baseUrl);
@@ -34,7 +34,10 @@ async function request(path, options = {}) {
       window.clearTimeout(timeout);
     }
   }
-  if (!response) throw networkError || new Error('La API no está disponible.');
+  if (!response) {
+    if (networkError?.name === 'AbortError') throw new Error('La API tardó demasiado en responder. Intenta nuevamente.');
+    throw networkError || new Error('La API no está disponible.');
+  }
   const payload = await response.json().catch(() => null);
   if (!response.ok) {
     const error = new Error(payload?.message || 'La API no pudo procesar la solicitud.');
