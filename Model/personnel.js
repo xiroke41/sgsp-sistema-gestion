@@ -26,6 +26,7 @@ export async function createPersonnel(data) {
     fechaIngreso: new Date(data.fechaIngreso),
     cargo: String(data.cargo).trim(),
     turno: data.turno === 'T2' ? 'T2' : 'T1',
+    rol: String(data.cargo).toLowerCase().includes('jefe') ? 'Jefe de linea' : 'Operador',
     certificaciones: Array.isArray(data.certificaciones) ? data.certificaciones.map((item) => String(item).trim()).filter(Boolean) : [],
     activo: true,
     createdAt: new Date(),
@@ -56,7 +57,7 @@ export async function updatePersonnel(personnelId, data) {
   const database = await getDatabase();
   const result = await database.collection('colaboradores').findOneAndUpdate(
     { _id: toObjectId(personnelId) },
-    { $set: { nombreCompleto: String(data.nombreCompleto).trim(), fechaIngreso: new Date(data.fechaIngreso), cargo: String(data.cargo).trim(), turno: data.turno === 'T2' ? 'T2' : 'T1', rut: String(data.rut || '').trim(), updatedAt: new Date() } },
+    { $set: { nombreCompleto: String(data.nombreCompleto).trim(), fechaIngreso: new Date(data.fechaIngreso), cargo: String(data.cargo).trim(), turno: data.turno === 'T2' ? 'T2' : 'T1', rol: String(data.cargo).toLowerCase().includes('jefe') ? 'Jefe de linea' : 'Operador', rut: String(data.rut || '').trim(), updatedAt: new Date() } },
     { returnDocument: 'after' }
   );
   if (!result) {

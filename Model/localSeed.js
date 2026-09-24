@@ -68,10 +68,12 @@ async function upsertPositions(database) {
 async function upsertCollaborator(database, collaborator) {
   const existing = await database.collection('colaboradores').findOne({ rut: collaborator.rut });
   if (existing) return existing;
+  const role = collaborator.cargo.toLowerCase().includes('jefe') ? 'Jefe de linea' : 'Operador';
   const document = {
     ...collaborator,
     fechaIngreso: new Date(collaborator.fechaIngreso),
     activo: true,
+    rol: role,
     createdAt: new Date(),
     updatedAt: new Date()
   };

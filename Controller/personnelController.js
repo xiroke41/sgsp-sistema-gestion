@@ -4,7 +4,7 @@ import { getDatabase } from '../Model/mongo.js';
 import { validateAccountRequest } from '../Model/accessPolicy.js';
 
 function serialize(personnel) {
-  return personnel.map((item) => ({ ...item, _id: item._id.toString(), turno: item.turno === 'T2' ? 'T2' : 'T1', fechaIngreso: item.fechaIngreso?.toISOString?.() || item.fechaIngreso }));
+  return personnel.map((item) => ({ ...item, _id: item._id.toString(), activo: item.activo !== false, rol: item.rol || (String(item.cargo).toLowerCase().includes('jefe') ? 'Jefe de linea' : 'Operador'), turno: item.turno === 'T2' ? 'T2' : 'T1', fechaIngreso: item.fechaIngreso?.toISOString?.() || item.fechaIngreso }));
 }
 
 export async function list(request, response) {
@@ -47,7 +47,7 @@ export async function create(request, response) {
     }
   }
   await database.collection('auditoria').insertOne({ usuarioId: request.user._id, entidad: 'colaboradores', entidadId: personnel._id, accion: 'CREATE', datos: { nombreCompleto: personnel.nombreCompleto, cargo: personnel.cargo }, createdAt: new Date() });
-  return response.status(201).json({ success: true, data: { ...personnel, _id: personnel._id.toString(), usuarioId: userId?.toString() || null, fechaIngreso: personnel.fechaIngreso.toISOString() }, message: 'Personal creado.' });
+  return response.status(201).json({ success: true, data: { ...personnel, _id: personnel._id.toString(), activo: personnel.activo !== false, rol: personnel.rol || (String(personnel.cargo).toLowerCase().includes('jefe') ? 'Jefe de linea' : 'Operador'), usuarioId: userId?.toString() || null, fechaIngreso: personnel.fechaIngreso.toISOString() }, message: 'Personal creado.' });
 }
 
 export async function updateStatus(request, response) {

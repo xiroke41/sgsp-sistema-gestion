@@ -463,7 +463,8 @@ async function loadDatabase() {
 
 export async function initializeDatabase() {
   if (!readyPromise) {
-    readyPromise = loadDatabase().then((database) => {
+    readyPromise = loadDatabase().then(async (database) => {
+      await ensureCollaboratorCollection(database);
       isReady = true;
       return database;
     }).catch((error) => {
@@ -473,6 +474,23 @@ export async function initializeDatabase() {
     });
   }
   return readyPromise;
+}
+
+export async function ensureCollaboratorCollection(database) {
+  database ||= await loadDatabase();
+  if (typeof database.listCollections !== 'function') {
+    database.ensureCollection?.('colaboradores');
+    return;
+  }
+  const collections = await database.listCollections({ name: 'colaboradores' }).toArray();
+  if (!collections.length) await database.createCollection('colaboradores');
+}
+
+export async function seedEmptyDatabase(database) {
+  database ||= await loadDatabase();
+  if (await database.collection('colaboradores').countDocuments({}) > 0) return;
+  const { seedLocalDatabase } = await import('./localSeed.js');
+  await seedLocalDatabase();
 }
 
 export async function getDatabase() {
