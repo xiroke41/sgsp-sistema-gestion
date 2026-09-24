@@ -84,8 +84,8 @@ button { min-height: 44px; }
 .work-line-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px; color: #f8fafc; background: #181b20; border-bottom: 1px solid var(--line); font-size: .72rem; font-weight: 700; text-transform: uppercase; }
 .work-line-body { display: grid; gap: 8px; min-height: 270px; padding: 12px; border: 2px dashed transparent; border-radius: 4px; transition: background .18s ease, border-color .18s ease; }
 .topbar { background: var(--navy); color: white; padding: 14px 0; border-bottom: 1px solid var(--line); }
-.login-page { display: grid; min-height: 100vh; place-items: center; padding: 24px; background: radial-gradient(circle at 12% 0%, rgba(38, 59, 120, .72), transparent 42%), linear-gradient(135deg, #080b14 0%, var(--brand-dark) 58%, #10141f 100%); }
-.login-panel { width: min(100%, 460px); padding: 32px; background: rgba(15, 17, 21, .94); border: 1px solid rgba(116, 142, 210, .55); border-top: 4px solid var(--brand-orange); border-radius: 8px; box-shadow: 0 24px 55px rgba(0, 0, 0, .48); }
+.login-page { display: grid; width: 100%; min-height: 100vh; min-height: 100dvh; place-items: center; padding: 24px; background: radial-gradient(circle at 12% 0%, rgba(38, 59, 120, .72), transparent 42%), linear-gradient(135deg, #080b14 0%, var(--brand-dark) 58%, #10141f 100%); }
+.login-panel { width: min(100%, 460px); margin: auto; padding: 32px; background: rgba(15, 17, 21, .94); border: 1px solid rgba(116, 142, 210, .55); border-top: 4px solid var(--brand-orange); border-radius: 8px; box-shadow: 0 24px 55px rgba(0, 0, 0, .48); }
 .login-panel .workspace-brand { color: #fff; }
 .login-panel .eyebrow { color: #8fa9ef; }
 .login-panel .field-control:focus { border-color: #8fa9ef; box-shadow: 0 0 0 3px rgba(143, 169, 239, .18); }
