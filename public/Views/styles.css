@@ -186,6 +186,7 @@ button { min-height: 44px; }
 .rotation-editor-zone-body { display: grid; gap: 7px; min-height: 215px; padding: 8px; }
 .rotation-editor-card { display: grid; gap: 3px; padding: 9px; color: #f8fafc; background: #181b20; border: 1px solid var(--line); border-left: 3px solid var(--accent-blue); border-radius: 4px; cursor: grab; }
 .rotation-editor-card.is-selected { border-color: var(--secondary); box-shadow: 0 0 0 2px rgba(245, 158, 11, .2); }
+.rotation-editor-card.is-changed { color: #fff7ed; background: rgba(242, 124, 0, .22); border-color: #f27c00; box-shadow: 0 0 0 2px rgba(242, 124, 0, .24); }
 .rotation-editor-card.position-card-a { border-left-color: #10b981; }
 .rotation-editor-card.position-card-b { border-left-color: #ef4444; }
 .rotation-editor-card.position-card-c { border-left-color: #3b82f6; }
