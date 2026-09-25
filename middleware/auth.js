@@ -33,6 +33,6 @@ export async function authenticateRequest(request, response, next) {
 export function requirePermission(permission) {
   return (request, response, next) => {
     if (request.user?.permissions?.all || request.user?.permissions?.[permission]) return next();
-    return response.status(403).json({ success: false, error: 'FORBIDDEN', message: `Permiso requerido: ${permission}.` });
+    return response.status(403).json({ success: false, error: 'FORBIDDEN', message: 'No tienes permisos para realizar esta acción.' });
   };
 }

@@ -124,7 +124,6 @@ async function loadGiveawayHistory(database, shift, requestUser) {
   const rows = rentRows.map((row) => {
     const relatedShift = shiftById.get(row.turnoId?.toString());
     if (!relatedShift) return null;
-    if ((requestUser.roleName === 'Jefe de linea' || requestUser.roleName === 'Jefe de línea') && relatedShift.jefeLineaId?.toString() !== requestUser._id.toString()) return null;
     const latestMonthlyClosure = latestMonthlyClosureByShift.get(relatedShift.turno);
     if (latestMonthlyClosure?.cerradoAt && new Date(row.calculadoAt) <= new Date(latestMonthlyClosure.cerradoAt)) return null;
     const tramo = row.tramo !== undefined ? Number(row.tramo?.toString?.() || 0) : Number(tramoById.get(row.tramoId?.toString()) || 0);

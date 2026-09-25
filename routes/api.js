@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { asyncHandler, validateBody } from '../middleware/http.js';
+import { loginRateLimit } from '../middleware/security.js';
 import { authenticateRequest, requirePermission } from '../middleware/auth.js';
 import * as authController from '../Controller/authController.js';
 import * as shiftController from '../Controller/shiftController.js';
@@ -10,7 +11,7 @@ import * as adminDataController from '../Controller/adminDataController.js';
 
 const router = Router();
 
-router.post('/auth/login', validateBody(['username', 'password']), asyncHandler(authController.login));
+router.post('/auth/login', loginRateLimit, validateBody(['username', 'password']), asyncHandler(authController.login));
 router.use(authenticateRequest);
 router.get('/auth/me', asyncHandler(authController.me));
 

@@ -15,6 +15,7 @@ function persistApiBaseUrl(baseUrl) {
 }
 
 async function request(path, options = {}) {
+  const { timeoutMs = 10000, ...fetchOptions } = options;
   const session = JSON.parse(localStorage.getItem('sgsp-operacion-session') || 'null');
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
   if (session?.token) headers.Authorization = `Bearer ${session.token}`;
@@ -22,16 +23,16 @@ async function request(path, options = {}) {
   let networkError;
   for (const baseUrl of buildApiCandidates()) {
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 10000);
+    const timeout = timeoutMs > 0 ? window.setTimeout(() => controller.abort(), timeoutMs) : null;
     try {
-      response = await fetch(`${baseUrl}${path}`, { ...options, headers, signal: controller.signal });
+      response = await fetch(`${baseUrl}${path}`, { ...fetchOptions, headers, signal: controller.signal });
       persistApiBaseUrl(baseUrl);
       break;
     } catch (error) {
       networkError = error;
       if (error.name !== 'AbortError' && error.name !== 'TypeError') throw error;
     } finally {
-      window.clearTimeout(timeout);
+      if (timeout) window.clearTimeout(timeout);
     }
   }
   if (!response) {
@@ -68,7 +69,7 @@ export function getPersonnelApi(activeOnly = false) {
 }
 
 export function createPersonnelApi(data) {
-  return request('/admin/personnel', { method: 'POST', body: JSON.stringify(data) });
+  return request('/admin/personnel', { method: 'POST', body: JSON.stringify(data), timeoutMs: 0 });
 }
 
 export function updatePersonnelStatusApi(id, activo) {

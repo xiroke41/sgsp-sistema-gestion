@@ -199,6 +199,9 @@ button { min-height: 44px; }
 .brand-logo { width: 130px; height: 48px; object-fit: contain; object-position: left center; }
 .sidebar-logo { width: 92px; height: 42px; object-fit: contain; object-position: left center; margin-right: 4px; }
 .header-meta { color: #c7d6dc; font-size: .82rem; }
+.user-actions { display: flex; align-items: center; min-width: 0; }
+.user-actions > span:not(.pulse) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-actions .logout-button { flex: 0 0 auto; }
 .pulse { display: inline-block; width: 8px; height: 8px; margin-right: 6px; background: #75d4a6; border-radius: 50%; box-shadow: 0 0 0 5px rgba(117, 212, 166, .15); }
 main { min-width: 0; padding: 24px 0 48px; }
 .eyebrow { color: var(--teal); font-size: .72rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
@@ -434,7 +437,8 @@ tbody td { padding: 14px 8px; font-size: .86rem; border-bottom-color: var(--line
   .work-line-column { scroll-snap-align: start; }
   .header-meta { font-size: .72rem; }
   .topbar .container-fluid { max-width: 100%; overflow: hidden; }
-  .topbar .header-meta { max-width: 52vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topbar .header-meta { max-width: 52vw; }
+  .topbar .user-actions { max-width: none; }
   .workspace-body main { width: 100%; max-width: 100%; }
   .rotation-toolbar { justify-content: flex-start; }
   .table-wrap { max-width: 100%; }

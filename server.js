@@ -7,7 +7,9 @@ import apiRoutes from './routes/api.js';
 import { errorHandler } from './middleware/http.js';
 import { closeMongo, initializeDatabase } from './Model/mongo.js';
 import { seedLocalDatabase } from './Model/localSeed.js';
+import { securityHeaders } from './middleware/security.js';
 
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) throw new Error('JWT_SECRET debe estar configurado en producción.');
 process.env.JWT_SECRET ||= 'sgsp-local-demo-secret';
 
 const app = express();
@@ -21,6 +23,7 @@ function isAllowedLocalOrigin(origin) {
 }
 
 app.disable('x-powered-by');
+app.use(securityHeaders);
 app.use(cors({
   origin(origin, callback) {
     if (isAllowedLocalOrigin(origin)) {

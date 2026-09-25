@@ -16,8 +16,5 @@
     "test": "node --test Model/*.test.js middleware/*.test.js server.test.js",
     "start": "npx --yes serve .",
     "api": "node server.js"
-  },
-  "devDependencies": {
-    "playwright": "^1.63.0"
   }
 }
