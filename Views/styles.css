@@ -449,6 +449,8 @@ tbody td { padding: 14px 8px; font-size: .86rem; border-bottom-color: var(--line
   .workspace-body main { width: 100%; max-width: 100%; }
   .rotation-toolbar { justify-content: flex-start; }
   .dashboard-section > .rotation-toolbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
+  .dashboard-section > .section-heading { display: block; width: 100%; margin-bottom: 12px; }
+  .dashboard-section > .section-heading h2 { margin-bottom: 4px; }
   .dashboard-section > .rotation-toolbar .btn { width: 100%; min-width: 0; padding: 8px 6px; line-height: 1.2; }
   .dashboard-section > .rotation-toolbar .btn:first-child { grid-column: 1 / -1; }
   .table-wrap { max-width: 100%; }

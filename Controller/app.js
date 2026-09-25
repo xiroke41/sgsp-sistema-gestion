@@ -78,11 +78,11 @@ async function loadViewTemplate(path) {
 }
 async function hydratePhysicalViews() {
   const sections = document.querySelectorAll('.dashboard-section');
-  const templates = [
-    { section: sections[0], path: 'Views/operacion/inicio-proceso.html', name: 'inicio-proceso' },
-    { section: sections[1], path: 'Views/operacion/en-proceso.html', name: 'en-proceso' },
-    { section: sections[2], path: 'Views/operacion/gestion-personal.html', name: 'gestion-personal' },
-    { section: sections[3], path: 'Views/operacion/cierre-turno.html', name: 'cierre-turno' }
+        const templates = [
+          { section: sections[0], path: 'Views/operacion/inicio-proceso.html', name: 'inicio-proceso' },
+          { section: sections[1], path: 'Views/operacion/en-proceso.html', name: 'en-proceso' },
+          { section: sections[2], path: 'Views/operacion/gestion-personal.html', name: 'gestion-personal' },
+          { section: sections[3], path: 'Views/operacion/cierre-turno.html', name: 'cierre-turno' }
   ];
   for (const item of templates) {
     if (!item.section) continue;
