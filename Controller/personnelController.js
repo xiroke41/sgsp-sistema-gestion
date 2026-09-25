@@ -33,7 +33,8 @@ export async function create(request, response) {
   const database = await getDatabase();
   let userId = null;
   if (request.body.username) {
-    const roleName = String(cargo).toLowerCase().includes('jefe') ? 'Jefe de linea' : 'Operador';
+    const normalizedCargo = String(cargo).toLowerCase();
+    const roleName = normalizedCargo.includes('jefe') ? 'Jefe de linea' : (normalizedCargo.includes('supervisor') ? 'Supervisor' : 'Operador');
     const role = await database.collection('roles').findOne({ nombre: roleName, activo: true });
     if (!role) return response.status(422).json({ success: false, error: 'ROLE_NOT_FOUND', message: `No existe el rol ${roleName}.` });
     try {

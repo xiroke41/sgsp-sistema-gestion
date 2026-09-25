@@ -7,8 +7,8 @@ const USERS = Object.freeze([
 
 const ROLE_PERMISSIONS = Object.freeze({
   admin: ['view_dashboard', 'manage_shift', 'assign_shift', 'manage_people', 'register_break', 'register_downtime', 'close_shift'],
-  line_manager: ['view_dashboard', 'manage_shift', 'manage_people', 'register_break', 'register_downtime', 'close_shift'],
-  supervisor: ['view_dashboard', 'manage_people', 'register_break', 'register_downtime'],
+  line_manager: ['view_dashboard', 'manage_shift', 'assign_shift', 'manage_people', 'register_break', 'register_downtime', 'close_shift'],
+  supervisor: ['view_dashboard', 'manage_shift', 'assign_shift', 'manage_people', 'register_break', 'register_downtime', 'close_shift'],
   operator: []
 });
 

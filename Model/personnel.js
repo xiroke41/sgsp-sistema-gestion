@@ -26,7 +26,7 @@ export async function createPersonnel(data) {
     fechaIngreso: new Date(data.fechaIngreso),
     cargo: String(data.cargo).trim(),
     turno: data.turno === 'T2' ? 'T2' : 'T1',
-    rol: String(data.cargo).toLowerCase().includes('jefe') ? 'Jefe de linea' : 'Operador',
+    rol: String(data.cargo).toLowerCase().includes('jefe') ? 'Jefe de linea' : (String(data.cargo).toLowerCase().includes('supervisor') ? 'Supervisor' : 'Operador'),
     certificaciones: Array.isArray(data.certificaciones) ? data.certificaciones.map((item) => String(item).trim()).filter(Boolean) : [],
     activo: true,
     createdAt: new Date(),

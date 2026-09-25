@@ -14,7 +14,8 @@ async function findCurrentShift(database, baseFilter = {}) {
 }
 
 function isLineManager(requestUser) {
-  return requestUser.roleName === 'Jefe de linea' || requestUser.roleName === 'Jefe de línea';
+  const role = String(requestUser?.roleName || '').trim().toLowerCase();
+  return role === 'jefe de linea' || role === 'jefe de línea' || role === 'supervisor';
 }
 
 async function findSharedCurrentShift(database, requestUser) {
@@ -101,7 +102,7 @@ async function findLatestMonthlyClosure(database, lineaId, turno = null) {
 }
 
 async function ensureManagedLine(database, requestUser, lineaId) {
-  if (requestUser.roleName !== 'Jefe de linea' && requestUser.roleName !== 'Jefe de línea') return;
+  if (!isLineManager(requestUser)) return;
   const managedShift = await database.collection('turnosProduccion').findOne({ lineaId, jefeLineaId: requestUser._id }, { sort: { createdAt: -1 } });
   if (!managedShift) {
     const error = new Error('El jefe de línea no tiene acceso a esta línea para cerrar el incentivo mensual.');
@@ -191,7 +192,7 @@ export async function createShift(request, response) {
   const assignedManager = jefeLineaId ? id(jefeLineaId) : null;
   const [line, manager] = await Promise.all([
     database.collection('lineasProduccion').findOne({ _id: id(lineaId), activo: true }),
-    database.collection('usuarios').aggregate([{ $match: { _id: assignedManager, activo: true } }, { $lookup: { from: 'roles', localField: 'roleId', foreignField: '_id', as: 'role' } }, { $unwind: '$role' }, { $match: { 'role.nombre': 'Jefe de linea' } }]).next()
+    database.collection('usuarios').aggregate([{ $match: { _id: assignedManager, activo: true } }, { $lookup: { from: 'roles', localField: 'roleId', foreignField: '_id', as: 'role' } }, { $unwind: '$role' }, { $match: { 'role.nombre': { $in: ['Jefe de linea', 'Jefe de línea', 'Supervisor'] } } }]).next()
   ]);
   if (!line) return response.status(404).json({ success: false, error: 'LINE_NOT_FOUND', message: 'La línea de producción no existe o está inactiva.' });
   if (!manager) return response.status(400).json({ success: false, error: 'INVALID_LINE_MANAGER', message: 'El jefe de línea no existe, está inactivo o no tiene el rol requerido.' });

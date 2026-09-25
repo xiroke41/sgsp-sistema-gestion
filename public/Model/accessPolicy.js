@@ -1,5 +1,6 @@
 export function canHavePlatformAccess(cargo) {
-  return String(cargo || '').trim().toLowerCase().includes('jefe');
+  const normalized = String(cargo || '').trim().toLowerCase();
+  return normalized.includes('jefe') || normalized.includes('supervisor');
 }
 
 export function validateAccountRequest(cargo, username, password) {

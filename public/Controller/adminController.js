@@ -6,7 +6,7 @@ export async function listLineManagers(request, response) {
     { $match: { activo: true } },
     { $lookup: { from: 'roles', localField: 'roleId', foreignField: '_id', as: 'role' } },
     { $unwind: '$role' },
-    { $match: { 'role.nombre': 'Jefe de linea' } },
+    { $match: { 'role.nombre': { $in: ['Jefe de linea', 'Jefe de línea', 'Supervisor'] } } },
     { $project: { _id: 1, username: 1 } },
     { $sort: { username: 1 } }
   ]).toArray();

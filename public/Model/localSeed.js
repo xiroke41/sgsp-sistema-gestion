@@ -17,7 +17,7 @@ const POSITION_CODES = [
 const ROLE_PERMISSIONS = {
   Administrador: { all: true },
   'Jefe de linea': { view_dashboard: true, manage_shift: true, assign_shift: true, manage_people: true, register_break: true, register_downtime: true, close_shift: true },
-  Supervisor: { view_dashboard: true, manage_people: true, register_break: true, register_downtime: true },
+  Supervisor: { view_dashboard: true, manage_shift: true, assign_shift: true, manage_people: true, register_break: true, register_downtime: true, close_shift: true },
   Operador: { view_dashboard: true }
 };
 
