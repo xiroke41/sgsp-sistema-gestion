@@ -404,16 +404,12 @@ function bindNativeModal() {
   const modal = document.querySelector('#actionModal');
   if (!modal) return;
   modal.querySelectorAll('[data-modal-close]').forEach((button) => button.addEventListener('click', closeNativeModal));
-  modal.addEventListener('click', (event) => { if (event.target === modal) closeNativeModal(); });
   const personnelModal = document.querySelector('#personnelFormModal');
   personnelModal?.querySelectorAll('[data-personnel-form-close]').forEach((button) => button.addEventListener('click', closePersonnelFormModal));
-  personnelModal?.addEventListener('click', (event) => { if (event.target === personnelModal) closePersonnelFormModal(); });
   const orderModal = document.querySelector('#orderFormModal');
   orderModal?.querySelectorAll('[data-order-form-close]').forEach((button) => button.addEventListener('click', closeOrderFormModal));
-  orderModal?.addEventListener('click', (event) => { if (event.target === orderModal) closeOrderFormModal(); });
   const monthlyModal = document.querySelector('#monthlyCloseModal');
   monthlyModal?.querySelectorAll('[data-monthly-close-cancel]').forEach((button) => button.addEventListener('click', closeMonthlyCloseConfirmation));
-  monthlyModal?.addEventListener('click', (event) => { if (event.target === monthlyModal) closeMonthlyCloseConfirmation(); });
   document.querySelector('#monthlyCloseForm')?.addEventListener('submit', async (event) => { event.preventDefault(); const turno = document.querySelector('#monthlyCloseShift').value; closeMonthlyCloseConfirmation(); await closeMonthlyIncentive(turno); });
 }
 function showPersonnelFormModal() { document.querySelector('#personnelFormModal')?.showModal(); }
