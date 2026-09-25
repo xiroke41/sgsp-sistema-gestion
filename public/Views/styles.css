@@ -440,6 +440,12 @@ tbody td { padding: 14px 8px; font-size: .86rem; border-bottom-color: var(--line
   .topbar .container-fluid { max-width: 100%; overflow: hidden; }
   .topbar .header-meta { max-width: 52vw; }
   .topbar .user-actions { max-width: none; }
+  .topbar { padding: 8px 0 10px; }
+  .topbar-content { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; padding-bottom: 24px; }
+  .topbar .brand { min-width: 0; }
+  .topbar .brand-logo { width: 120px; height: 44px; }
+  .topbar .brand .responsive-label { position: absolute; left: 0; bottom: 0; max-width: 100%; white-space: nowrap; }
+  .topbar .user-actions { align-self: start; }
   .workspace-body main { width: 100%; max-width: 100%; }
   .rotation-toolbar { justify-content: flex-start; }
   .table-wrap { max-width: 100%; }
