@@ -15,7 +15,7 @@ async function findCurrentShift(database, baseFilter = {}) {
 
 function isLineManager(requestUser) {
   const role = String(requestUser?.roleName || '').trim().toLowerCase();
-  return role === 'jefe de linea' || role === 'jefe de línea' || role === 'supervisor';
+  return role === 'jefe de linea' || role === 'jefe de línea';
 }
 
 async function findSharedCurrentShift(database, requestUser) {
