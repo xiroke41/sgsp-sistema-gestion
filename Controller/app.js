@@ -537,6 +537,8 @@ function openModal(type, lineId = null, lineName = null) {
 async function loadPersonnel() {
   const target = document.querySelector('#personnelTable');
   if (!target) return;
+  const personnelModal = document.querySelector('#actionModal');
+  if (personnelModal && !personnelModal.open) personnelModal.showModal();
   try {
     const response = await getPersonnelApi(false);
     target.innerHTML = `<table class="data-table compact-table"><thead><tr><th>Nombre</th><th>Cargo</th><th>Turno</th><th>Disponibilidad</th><th>Acción</th></tr></thead><tbody>${response.data.length ? response.data.map((person) => `<tr><td>${person.nombreCompleto}</td><td>${person.cargo}</td><td><span class="shift-badge">${person.turno === 'T2' ? 'T2' : 'T1'}</span></td><td><label class="availability-switch"><input type="checkbox" data-personnel-status="${person._id}" data-active="${person.activo}" ${person.activo ? 'checked' : ''} aria-label="Cambiar disponibilidad de ${person.nombreCompleto}"><span class="availability-slider"></span><span class="availability-switch-text">${person.activo ? 'Disponible' : 'No disponible'}</span></label></td><td class="personnel-row-actions"><button type="button" class="native-button native-button-secondary compact-button personnel-action-button" data-personnel-edit="${person._id}">Editar</button><button type="button" class="native-button native-button-danger compact-button" data-personnel-delete="${person._id}">Eliminar</button></td></tr>`).join('') : '<tr><td colspan="5" class="muted">Sin personal registrado.</td></tr>'}</tbody></table>`;
@@ -549,8 +551,10 @@ async function loadPersonnel() {
       try { await updatePersonnelStatusApi(button.dataset.personnelStatus, nextActive); loadPersonnel(); }
       catch (error) { showToast(error.message); }
     }));
+    if (personnelModal && !personnelModal.open) personnelModal.showModal();
   } catch (error) {
     target.innerHTML = `<p class="text-danger small">${error.message}</p>`;
+    if (personnelModal && !personnelModal.open) personnelModal.showModal();
   }
 }
 function bindPasswordStrengthChecker(input) {
