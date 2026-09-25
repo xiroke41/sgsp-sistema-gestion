@@ -553,6 +553,30 @@ async function loadPersonnel() {
     target.innerHTML = `<p class="text-danger small">${error.message}</p>`;
   }
 }
+function bindPasswordStrengthChecker(input) {
+  if (!input) return;
+  const checker = document.createElement('div');
+  checker.className = 'password-strength-checker';
+  checker.setAttribute('aria-live', 'polite');
+  input.insertAdjacentElement('afterend', checker);
+  const update = () => {
+    const value = input.value;
+    const checks = [
+      ['12 caracteres como mínimo', value.length >= 12],
+      ['Una letra mayúscula', /[A-Z]/.test(value)],
+      ['Una letra minúscula', /[a-z]/.test(value)],
+      ['Un número', /\d/.test(value)],
+      ['Un símbolo', /[^A-Za-z0-9\s]/.test(value)]
+    ];
+    const passed = checks.filter(([, valid]) => valid).length;
+    const level = passed === 0 ? 'empty' : passed < 3 ? 'weak' : passed < checks.length ? 'medium' : 'strong';
+    const labels = { empty: 'Ingresa una contraseña segura', weak: 'Contraseña débil', medium: 'Contraseña en progreso', strong: 'Contraseña segura' };
+    checker.className = `password-strength-checker ${level}`;
+    checker.innerHTML = `<div class="password-strength-meter" role="presentation"><span></span><span></span><span></span></div><strong>${labels[level]}</strong><ul>${checks.map(([label, valid]) => `<li class="${valid ? 'valid' : ''}">${valid ? '✓' : '○'} ${label}</li>`).join('')}</ul>`;
+  };
+  input.addEventListener('input', update);
+  update();
+}
 function openPersonnelForm(person = null) {
   const form = document.querySelector('#personnelForm');
   const body = document.querySelector('#personnelFormBody');
@@ -561,6 +585,7 @@ function openPersonnelForm(person = null) {
   document.querySelector('#personnelFormTitle').textContent = editing ? 'Editar información del personal' : 'Agregar personal';
   body.innerHTML = `<div class="admin-form-grid"><div class="admin-form-field"><label class="field-label" for="personName">Nombre completo</label><input class="field-control" id="personName" required></div><div class="admin-form-field"><label class="field-label" for="personRole">Cargo</label><select class="field-select" id="personRole" required><option value="Jefe de linea">Jefe de línea</option><option value="Operador">Operador</option></select></div><div class="admin-form-field"><label class="field-label" for="personShift">Turno</label><select class="field-select" id="personShift" required><option value="T1">T1</option><option value="T2">T2</option></select></div><div class="admin-form-field"><label class="field-label" for="personDate">Fecha de ingreso</label><input class="field-control" id="personDate" type="date" required></div><div class="admin-form-field"><label class="field-label" for="personRut">RUT</label><input class="field-control" id="personRut"></div>${editing ? '' : '<div class="admin-form-field" data-account-fields><label class="field-label" for="personUsername">Usuario de acceso</label><input class="field-control" id="personUsername" autocomplete="off"></div><div class="admin-form-field" data-account-fields><label class="field-label" for="personPassword">Contraseña de acceso</label><input class="field-control" id="personPassword" type="password" autocomplete="new-password"></div>'}</div>`;
   document.querySelector('#personName').value = person?.nombreCompleto || '';
+  if (editing) body.insertAdjacentHTML('beforeend', '<div class="admin-form-field"><label class="field-label" for="personPassword">Cambiar contraseña</label><input class="field-control" id="personPassword" type="password" minlength="12" autocomplete="new-password" placeholder="Dejar vacío para conservarla"><small class="muted small-text">Mínimo 12 caracteres, con mayúscula, minúscula, número y símbolo.</small></div>');
   document.querySelector('#personRole').value = person?.cargo?.toLowerCase().includes('jefe') ? 'Jefe de linea' : 'Operador';
   document.querySelector('#personShift').value = person?.turno === 'T2' ? 'T2' : 'T1';
   document.querySelector('#personDate').value = person?.fechaIngreso ? new Date(person.fechaIngreso).toISOString().slice(0, 10) : '';
@@ -573,6 +598,7 @@ function openPersonnelForm(person = null) {
   const updateAccountFields = () => accountFields.forEach((field) => { field.hidden = roleSelect.value !== 'Jefe de linea'; });
   roleSelect.addEventListener('change', updateAccountFields);
   updateAccountFields();
+  bindPasswordStrengthChecker(document.querySelector('#personPassword'));
   showPersonnelFormModal();
 }
 function startPersonnelEdit(person) {
@@ -998,7 +1024,7 @@ async function handleSubmit(event) {
     } catch (error) { showToast(error.message); }
   } else if (type === 'personnel-update') {
     try {
-      await updatePersonnelApi(form.dataset.personnelId, { nombreCompleto: document.querySelector('#personName').value.trim(), cargo: document.querySelector('#personRole').value, turno: document.querySelector('#personShift').value, fechaIngreso: document.querySelector('#personDate').value, rut: document.querySelector('#personRut').value.trim() });
+      await updatePersonnelApi(form.dataset.personnelId, { nombreCompleto: document.querySelector('#personName').value.trim(), cargo: document.querySelector('#personRole').value, turno: document.querySelector('#personShift').value, fechaIngreso: document.querySelector('#personDate').value, rut: document.querySelector('#personRut').value.trim(), password: document.querySelector('#personPassword')?.value || '' });
       await returnToPersonnelManagement();
       showToast('Información del personal actualizada.');
     } catch (error) { showToast(error.message); }

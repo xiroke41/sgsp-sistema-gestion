@@ -98,6 +98,18 @@ button { min-height: 44px; }
 .demo-access { display: grid; gap: 4px; padding: 12px; color: var(--muted); background: #f3f6f5; border-left: 3px solid var(--teal); font-size: .78rem; }
 .logout-button { min-height: auto; margin-left: 8px; padding: 3px 8px; color: white; background: transparent; border: 1px solid rgba(255,255,255,.4); border-radius: 4px; font-size: .72rem; }
 .logout-button:hover, .logout-button:focus-visible { color: #101820; background: #75d4a6; border-color: #75d4a6; outline: none; }
+.password-strength-checker { display: grid; gap: 6px; margin-top: 7px; color: var(--muted); font-size: .72rem; line-height: 1.35; }
+.password-strength-checker strong { color: #f8fafc; font-size: .76rem; }
+.password-strength-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.password-strength-meter span { height: 4px; background: var(--line); border-radius: 3px; }
+.password-strength-checker.weak .password-strength-meter span:first-child { background: #ef4444; }
+.password-strength-checker.medium .password-strength-meter span:nth-child(-n+2) { background: #f59e0b; }
+.password-strength-checker.strong .password-strength-meter span { background: #10b981; }
+.password-strength-checker.weak strong { color: #f87171; }
+.password-strength-checker.medium strong { color: #fbbf24; }
+.password-strength-checker.strong strong { color: #34d399; }
+.password-strength-checker ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 10px; margin: 0; padding: 0; list-style: none; }
+.password-strength-checker li.valid { color: #75d4a6; }
 .admin-personnel-button { min-height: 32px; margin-left: 8px; padding: 5px 10px; color: #f8fafc; background: #20252d; border: 1px solid var(--teal); border-radius: 4px; font-size: .72rem; }
 .admin-personnel-button:hover, .admin-personnel-button:focus-visible { color: #090a0f; background: var(--teal); outline: none; }
 .admin-shell main { background:

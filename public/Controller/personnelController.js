@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { createPersonnel, deletePersonnel, listPersonnel, setPersonnelStatus, updatePersonnel } from '../Model/personnel.js';
 import { getDatabase } from '../Model/mongo.js';
-import { validateAccountRequest } from '../Model/accessPolicy.js';
+import { isStrongPassword, validateAccountRequest } from '../Model/accessPolicy.js';
 
 function serialize(personnel) {
   return personnel.map((item) => ({ ...item, _id: item._id.toString(), turno: item.turno === 'T2' ? 'T2' : 'T1', fechaIngreso: item.fechaIngreso?.toISOString?.() || item.fechaIngreso }));
@@ -64,7 +64,14 @@ export async function update(request, response) {
   const parsedDate = new Date(fechaIngreso);
   if (Number.isNaN(parsedDate.getTime())) return response.status(400).json({ success: false, error: 'VALIDATION_ERROR', message: 'La fecha de ingreso no es válida.' });
   if (request.body.turno && !['T1', 'T2'].includes(request.body.turno)) return response.status(400).json({ success: false, error: 'VALIDATION_ERROR', message: 'El turno debe ser T1 o T2.' });
+  if (request.body.password !== undefined && request.body.password !== '' && !isStrongPassword(request.body.password)) return response.status(400).json({ success: false, error: 'WEAK_PASSWORD', message: 'La nueva contraseña debe tener al menos 12 caracteres, mayúscula, minúscula, número y símbolo.' });
+  const existingPersonnel = request.body.password ? await listPersonnel({ activeOnly: false }).then((items) => items.find((item) => item._id.toString() === request.params.id)) : null;
+  if (request.body.password && !existingPersonnel?.usuarioId) return response.status(409).json({ success: false, error: 'ACCOUNT_NOT_FOUND', message: 'El colaborador no tiene una cuenta de acceso.' });
   const personnel = await updatePersonnel(request.params.id, { ...request.body, fechaIngreso: parsedDate });
+  if (request.body.password) {
+    const database = await getDatabase();
+    await database.collection('usuarios').updateOne({ _id: personnel.usuarioId }, { $set: { passwordHash: await bcrypt.hash(String(request.body.password), 12), updatedAt: new Date() } });
+  }
   const database = await getDatabase();
   await database.collection('auditoria').insertOne({ usuarioId: request.user._id, entidad: 'colaboradores', entidadId: personnel._id, accion: 'UPDATE', datos: { nombreCompleto: personnel.nombreCompleto, cargo: personnel.cargo }, createdAt: new Date() });
   return response.json({ success: true, data: { ...personnel, _id: personnel._id.toString(), turno: personnel.turno === 'T2' ? 'T2' : 'T1', fechaIngreso: personnel.fechaIngreso.toISOString() }, message: 'Información del personal actualizada.' });
