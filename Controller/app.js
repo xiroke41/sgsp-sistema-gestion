@@ -588,9 +588,10 @@ function openPersonnelForm(person = null) {
   const editing = Boolean(person);
   document.querySelector('#personnelFormTitle').textContent = editing ? 'Editar información del personal' : 'Agregar personal';
   body.innerHTML = `<div class="admin-form-grid"><div class="admin-form-field"><label class="field-label" for="personName">Nombre completo</label><input class="field-control" id="personName" required></div><div class="admin-form-field"><label class="field-label" for="personRole">Cargo</label><select class="field-select" id="personRole" required><option value="Jefe de linea">Jefe de línea</option><option value="Operador">Operador</option></select></div><div class="admin-form-field"><label class="field-label" for="personShift">Turno</label><select class="field-select" id="personShift" required><option value="T1">T1</option><option value="T2">T2</option></select></div><div class="admin-form-field"><label class="field-label" for="personDate">Fecha de ingreso</label><input class="field-control" id="personDate" type="date" required></div><div class="admin-form-field"><label class="field-label" for="personRut">RUT</label><input class="field-control" id="personRut"></div>${editing ? '' : '<div class="admin-form-field" data-account-fields><label class="field-label" for="personUsername">Usuario de acceso</label><input class="field-control" id="personUsername" autocomplete="off"></div><div class="admin-form-field" data-account-fields><label class="field-label" for="personPassword">Contraseña de acceso</label><input class="field-control" id="personPassword" type="password" autocomplete="new-password"></div>'}</div>`;
+  document.querySelector('#personRole').insertAdjacentHTML('beforeend', '<option value="Supervisor">Supervisor</option>');
   document.querySelector('#personName').value = person?.nombreCompleto || '';
   if (editing) body.insertAdjacentHTML('beforeend', '<div class="admin-form-field"><label class="field-label" for="personPassword">Cambiar contraseña</label><input class="field-control" id="personPassword" type="password" minlength="12" autocomplete="new-password"><small class="muted small-text">Mínimo 12 caracteres, con mayúscula, minúscula, número y símbolo.</small></div>');
-  document.querySelector('#personRole').value = person?.cargo?.toLowerCase().includes('jefe') ? 'Jefe de linea' : 'Operador';
+  document.querySelector('#personRole').value = person?.cargo?.toLowerCase().includes('jefe') ? 'Jefe de linea' : (person?.cargo?.toLowerCase().includes('supervisor') ? 'Supervisor' : 'Operador');
   document.querySelector('#personShift').value = person?.turno === 'T2' ? 'T2' : 'T1';
   document.querySelector('#personDate').value = person?.fechaIngreso ? new Date(person.fechaIngreso).toISOString().slice(0, 10) : '';
   document.querySelector('#personRut').value = person?.rut || '';
@@ -599,7 +600,7 @@ function openPersonnelForm(person = null) {
   form.onsubmit = handleSubmit;
   const roleSelect = document.querySelector('#personRole');
   const accountFields = document.querySelectorAll('[data-account-fields]');
-  const updateAccountFields = () => accountFields.forEach((field) => { field.hidden = roleSelect.value !== 'Jefe de linea'; });
+  const updateAccountFields = () => accountFields.forEach((field) => { field.hidden = !['Jefe de linea', 'Supervisor'].includes(roleSelect.value); });
   roleSelect.addEventListener('change', updateAccountFields);
   updateAccountFields();
   bindPasswordStrengthChecker(document.querySelector('#personPassword'));
