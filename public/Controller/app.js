@@ -313,9 +313,10 @@ async function render() {
   if (session.token && can(session, 'manage_shift') && !catalogs.lines.length) await hydrateCatalogs();
   const result = performance();
   const showShiftActions = can(session, 'manage_shift');
-  const showPeople = can(session, 'manage_people');
-  const showDowntime = can(session, 'register_downtime');
-  const showClose = can(session, 'close_shift');
+  const canOperate = state.shift?.canOperate !== false;
+  const showPeople = canOperate && can(session, 'manage_people');
+  const showDowntime = canOperate && can(session, 'register_downtime');
+  const showClose = canOperate && can(session, 'close_shift');
   const stage = workflowStage();
   const inProcess = stage === 'in_process';
   app.innerHTML = `

@@ -13,6 +13,16 @@ async function findCurrentShift(database, baseFilter = {}) {
   return database.collection('turnosProduccion').findOne({ ...baseFilter, estado: 'planificado' }, { sort: { createdAt: -1 } });
 }
 
+  function isLineManager(requestUser) {
+    return requestUser.roleName === 'Jefe de linea' || requestUser.roleName === 'Jefe de línea';
+  }
+
+  async function findSharedCurrentShift(database, requestUser) {
+    if (!isLineManager(requestUser)) return findCurrentShift(database);
+    const assignment = await database.collection('turnosProduccion').findOne({ jefeLineaId: requestUser._id }, { sort: { createdAt: -1 } });
+    return assignment ? findCurrentShift(database, { lineaId: assignment.lineaId }) : null;
+  }
+
 async function createFollowUpShift(database, shift, referenceDate) {
   const createdAt = new Date(referenceDate);
   const nextShift = {
@@ -136,13 +146,14 @@ async function loadGiveawayHistory(database, shift, requestUser) {
 
 export async function dashboard(request, response) {
   const database = await getDatabase();
-  const shiftFilter = request.user.roleName === 'Jefe de linea' || request.user.roleName === 'Jefe de línea' ? { jefeLineaId: request.user._id } : {};
-  const shift = await findCurrentShift(database, shiftFilter);
+    const shift = await findSharedCurrentShift(database, request.user);
+    const ownsShift = Boolean(shift && (!isLineManager(request.user) || shift.jefeLineaId?.toString() === request.user._id.toString()));
   const line = shift ? await database.collection('lineasProduccion').findOne({ _id: shift.lineaId }) : null;
-  const operators = shift?.estado === 'activo' ? await database.collection('asistenciaTurno').aggregate([{ $match: { turnoId: shift._id, presente: true } }, { $lookup: { from: 'colaboradores', localField: 'colaboradorId', foreignField: '_id', as: 'colaborador' } }, { $unwind: { path: '$colaborador', preserveNullAndEmptyArrays: true } }, { $project: { _id: 1, colaboradorId: 1, estado: 1, puestoId: 1, lineaTrabajo: 1, grupoRotacion: 1, grupoPuesto: 1, nombre: '$colaborador.nombreCompleto', cargo: '$colaborador.cargo', productividad: 1 } }]).toArray() : [];
-  const downtime = shift ? await database.collection('detencionesLinea').find({ turnoId: shift._id }).sort({ inicio: -1 }).limit(20).toArray() : [];
+    if (shift?.estado === 'activo' && ownsShift) await syncAttendanceForShift(database, shift);
+    const operators = shift?.estado === 'activo' && ownsShift ? await database.collection('asistenciaTurno').aggregate([{ $match: { turnoId: shift._id, presente: true } }, { $lookup: { from: 'colaboradores', localField: 'colaboradorId', foreignField: '_id', as: 'colaborador' } }, { $unwind: { path: '$colaborador', preserveNullAndEmptyArrays: true } }, { $project: { _id: 1, colaboradorId: 1, estado: 1, puestoId: 1, lineaTrabajo: 1, grupoRotacion: 1, grupoPuesto: 1, nombre: '$colaborador.nombreCompleto', cargo: '$colaborador.cargo', productividad: 1 } }]).toArray() : [];
+    const downtime = shift && ownsShift ? await database.collection('detencionesLinea').find({ turnoId: shift._id }).sort({ inicio: -1 }).limit(20).toArray() : [];
   const giveawayHistory = shift ? await loadGiveawayHistory(database, shift, request.user) : { rows: [], total: 0 };
-  return response.json({ success: true, data: { shift: shift ? { ...shift, linea: line?.nombre } : null, operators, downtime, giveawayHistory }, message: 'Dashboard operativo obtenido.' });
+  return response.json({ success: true, data: { shift: shift ? { ...shift, linea: line?.nombre, canOperate: ownsShift } : null, operators, downtime, giveawayHistory }, message: 'Dashboard operativo obtenido.' });
 }
 
 export async function listShifts(request, response) {
@@ -189,8 +200,12 @@ export async function createShift(request, response) {
 export async function startShift(request, response) {
   const database = await getDatabase();
   const filter = { _id: id(request.params.id), estado: 'planificado' };
-  if (request.user.roleName === 'Jefe de linea' || request.user.roleName === 'Jefe de línea') filter.jefeLineaId = request.user._id;
-  const result = await database.collection('turnosProduccion').findOneAndUpdate(filter, { $set: { estado: 'activo', horaInicio: new Date() } }, { returnDocument: 'after' });
+    if (isLineManager(request.user)) filter.jefeLineaId = request.user._id;
+    const plannedShift = await database.collection('turnosProduccion').findOne(filter);
+    if (!plannedShift) return response.status(404).json({ success: false, error: 'SHIFT_NOT_FOUND', message: 'Turno planificado no encontrado.' });
+    const activeShift = await database.collection('turnosProduccion').findOne({ lineaId: plannedShift.lineaId, estado: 'activo', _id: { $ne: plannedShift._id } });
+    if (activeShift) return response.status(409).json({ success: false, error: 'ACTIVE_SHIFT_EXISTS', message: 'Ya existe un proceso abierto en esta sala.' });
+    const result = await database.collection('turnosProduccion').findOneAndUpdate({ _id: plannedShift._id, estado: 'planificado' }, { $set: { estado: 'activo', horaInicio: new Date() } }, { returnDocument: 'after' });
   if (!result) return response.status(404).json({ success: false, error: 'SHIFT_NOT_FOUND', message: 'Turno planificado no encontrado.' });
   await syncAttendanceForShift(database, result);
   await database.collection('auditoria').insertOne({ usuarioId: request.user._id, entidad: 'turnosProduccion', entidadId: result._id, accion: 'START', datos: { horaInicio: result.horaInicio }, createdAt: new Date() });
@@ -204,6 +219,7 @@ export async function closeShift(request, response) {
   const lineId = id(lineaId);
   const shift = await database.collection('turnosProduccion').findOne({ _id: shiftId, estado: 'activo' });
   if (!shift) return response.status(404).json({ success: false, error: 'SHIFT_NOT_FOUND', message: 'Turno activo no encontrado.' });
+  if (isLineManager(request.user) && shift.jefeLineaId?.toString() !== request.user._id.toString()) return response.status(403).json({ success: false, error: 'SHIFT_OWNER_REQUIRED', message: 'Solo el jefe responsable del proceso puede cerrarlo.' });
   if (!shift.lineaId.equals(lineId)) return response.status(400).json({ success: false, error: 'LINE_MISMATCH', message: 'La línea no corresponde al turno.' });
 
   const performance = await calculateShiftPerformanceFromGiveaway(database, kilosProcesados, porcentajeGiveaway);
